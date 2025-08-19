@@ -32,7 +32,11 @@ void Button::init()
 
 void Button::update()
 {
-
+    bool current_state = digitalRead(this->button_pin);
+    if (current_state != this->state) {
+        this->set_state(current_state);
+        this->send_packet();
+    }
 }
 
 void Button::send_packet() {

@@ -17,7 +17,7 @@ public:
 
     void send_packet();
 private:
-    bool state;
+    bool state = HIGH;
     uint8_t button_pin;
     std::string packet_content;
 };
