@@ -34,9 +34,6 @@ bool InputSystem::begin() {
   std::istringstream iss(content);
   const auto cfg = parseConfig(iss);
   initButtonsFromConfig(cfg);
-  
-
-  for (auto& b : buttons) b.init();
   return true;
 }
 
@@ -104,6 +101,10 @@ InputSystem::ConfigData InputSystem::parseConfig(std::istream& in) {
 
 void InputSystem::initButtonsFromConfig(const ConfigData& cfg) {
   buttons.clear();
-  for (const auto& e : cfg.buttons)     buttons.emplace_back(uint8_t(e.value), e.name);
-  for (const auto& e : cfg.dpadButtons) buttons.emplace_back(uint8_t(e.value), e.name);
+  auto add = [this](const ConfigEntry& e) {
+    buttons.emplace_back(uint8_t(e.value), e.name);
+    buttons.back().init();
+  };
+  for (const auto& e : cfg.buttons)     add(e);
+  for (const auto& e : cfg.dpadButtons) add(e);
 }
