@@ -26,7 +26,8 @@ public:
 
     InputSystem();                  // defaults to "/config.txt"
     bool begin();                   // mounts LittleFS, loads & parses file
-    void update();                  // updates all buttons
+    void update();                  // high-level update
+    void buttons_update();          // updates all buttons
     static void printConfig(const ConfigData& cfg);
 
     const std::vector<Button>& getButtons() const { return buttons; }
