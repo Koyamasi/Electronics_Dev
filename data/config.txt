@@ -1,0 +1,19 @@
+Buttons
+------
+"Start" - 31
+"Select" - 33
+
+DpadButtons
+------
+"Up" - 22
+"Down" - 23
+"Left" - 24
+"Right" - 25
+
+Potensiometers
+------
+"Throttle" - 2
+
+led
+------
+"Status" - 13
