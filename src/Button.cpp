@@ -26,8 +26,6 @@ void Button::init()
     pinMode(this->button_pin, INPUT_PULLUP);
     //every button upon initialising software, reads and initialises the correct state.
     this->set_state(digitalRead(this->button_pin));
-    delay (4000);
-    this->send_packet();
 }
 
 void Button::update()
