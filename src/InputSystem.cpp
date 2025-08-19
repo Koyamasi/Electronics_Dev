@@ -41,7 +41,13 @@ bool InputSystem::begin() {
 }
 
 void InputSystem::update() {
-  for (auto& b : buttons) b.update();
+  buttons_update();
+}
+
+void InputSystem::buttons_update() {
+  for (auto& b : buttons) {
+    b.update();
+  }
 }
 
 void InputSystem::printConfig(const ConfigData& cfg) {
