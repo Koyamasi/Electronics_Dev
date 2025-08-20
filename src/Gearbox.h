@@ -5,18 +5,21 @@
 #include "Button.h"
 #include "Led.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class Gearbox {
 public:
     Gearbox();
+
+    // Pointers to the button objects controlling each gear.
     Button* park_button;
     Button* drive_button;
     Button* neutral_button;
     Button* rear_button;
     Button* manual_button;
 
+    // Pointers to indicator LEDs for each gear.
     Led* park_led;
     Led* drive_led;
     Led* neutral_led;
@@ -27,16 +30,12 @@ public:
     void update();
 
 private:
-    // int _pPin, _pled;
-    // int _rPin, _rled;
-    // int _nPin, _nled;
-    // int _dPin, _dled;
-    // int _mPin, _mled;
-
     void setGear(char gear);
     void setLeds(char gear);
     void sendPacket(char gear);
+
     char lastGear = '\0';
 };
 
-#endif 
+#endif
+
