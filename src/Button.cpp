@@ -38,7 +38,7 @@ void Button::update()
 }
 
 void Button::send_packet() {
-    const char stateCh = (this->state == LOW) ? 'N' : 'F'; // adjust if your logic differs
+    const char stateCh = (this->state == LOW) ? 'U' : 'D'; // adjust if your logic differs
     constexpr uint8_t SEP = 0x1F; // ASCII Unit Separator
 
     // Write: <packet_content><US><N_or_F>\n

@@ -37,17 +37,21 @@ bool InputSystem::begin() {
   return true;
 }
 
-void InputSystem::update() {
+void InputSystem::update() 
+{
   buttons_update();
 }
 
-void InputSystem::buttons_update() {
-  for (auto& b : buttons) {
+void InputSystem::buttons_update() 
+{
+  for (auto& b : buttons) 
+  {
     b.update();
   }
 }
 
-void InputSystem::printConfig(const ConfigData& cfg) {
+void InputSystem::printConfig(const ConfigData& cfg) 
+{
   Serial.printf("Buttons (%u):\n", (unsigned)cfg.buttons.size());
   for (const auto& e : cfg.buttons) Serial.printf("  %s - %d\n", e.name.c_str(), e.value);
 
