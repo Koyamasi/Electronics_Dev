@@ -5,6 +5,7 @@
 #include <string>
 class Button {
 public:
+    Button();
     //packet content is the name of the button
     Button(uint8_t pin, std::string packet_content);
     void init();

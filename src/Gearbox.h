@@ -1,32 +1,42 @@
-// #ifndef GEARBOX_H
-// #define GEARBOX_H
+#ifndef GEARBOX_H
+#define GEARBOX_H
 
-// #include <Arduino.h>
-// #include "Button.h"
-// #include "Led.h"
+#include <Arduino.h>
+#include "Button.h"
+#include "Led.h"
 
-// #include <vector>
-// #include <string>
+#include <vector>
+#include <string>
 
-// class Gearbox {
-// public:
-//     //Gearbox(int pPin, int pled, int rPin, int rled, int nPin, int nled, int dPin, int dled, int mPin, int mled);
-//     std::vector<Button> buttons;
-//     std::vector<Led> leds;
-//     void init();
-//     void update();
+class Gearbox {
+public:
+    Gearbox();
+    Button* park_button;
+    Button* drive_button;
+    Button* neutral_button;
+    Button* rear_button;
+    Button* manual_button;
 
-// private:
-//     // int _pPin, _pled;
-//     // int _rPin, _rled;
-//     // int _nPin, _nled;
-//     // int _dPin, _dled;
-//     // int _mPin, _mled;
+    Led* park_led;
+    Led* drive_led;
+    Led* neutral_led;
+    Led* rear_led;
+    Led* manual_led;
 
-//     void setGear(char gear);
-//     void setLeds(char gear);
-//     void sendPacket(char gear);
-//     char lastGear = '\0';
-// };
+    void init(std::vector<Button>& buttons, std::vector<Led>& leds);
+    void update();
 
-// #endif 
+private:
+    // int _pPin, _pled;
+    // int _rPin, _rled;
+    // int _nPin, _nled;
+    // int _dPin, _dled;
+    // int _mPin, _mled;
+
+    void setGear(char gear);
+    void setLeds(char gear);
+    void sendPacket(char gear);
+    char lastGear = '\0';
+};
+
+#endif 

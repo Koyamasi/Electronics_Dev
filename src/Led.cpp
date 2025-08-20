@@ -1,5 +1,10 @@
 #include "Led.h"
 
+Led::Led()
+{
+    ;
+}
+
 Led::Led(uint8_t led_pin, std::string name)
 {
     this->led_pin = led_pin;
@@ -19,6 +24,11 @@ void Led::set_state(bool new_state)
 uint8_t Led::get_led_pin()
 {
     return this->led_pin;
+}
+
+std::string Led::get_name()
+{
+    return this->name;
 }
 
 void Led::init()

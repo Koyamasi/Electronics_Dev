@@ -9,6 +9,7 @@
 #include <istream>
 #include "Button.h"
 #include "Led.h"
+#include "Gearbox.h"
 
 class InputSystem {
 public:
@@ -42,6 +43,7 @@ private:
     String fsPath;                  // "/config.txt"
     std::vector<Button> buttons;    // Buttons + DpadButtons
     std::vector<Led> leds;          // LED outputs
+    Gearbox gearbox;                //gearbox
 };
 
 #endif // INPUTSYSTEM_H

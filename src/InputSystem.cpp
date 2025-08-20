@@ -15,13 +15,15 @@ InputSystem::InputSystem() : fsPath("/config.txt") {}
 
 bool InputSystem::begin() {
   // Mount FS (format_if_mount_failed = true)
-  if (!LittleFS.begin(true)) {
+  if (!LittleFS.begin(true)) 
+  {
     Serial.println("LittleFS mount FAILED");
     return false;
   }
 
   File f = LittleFS.open(fsPath, "r");
-  if (!f) {
+  if (!f) 
+  {
     Serial.println("Failed to open /config.txt");
     return false;
   }
@@ -35,13 +37,16 @@ bool InputSystem::begin() {
   const auto cfg = parseConfig(iss);
   initButtonsFromConfig(cfg);
   initLedsFromConfig(cfg);
+  gearbox=Gearbox();
+  gearbox.init(buttons,leds);
   return true;
 }
 
 void InputSystem::update()
 {
-  buttons_update();
-  update_led();
+  //buttons_update();
+  //update_led();
+  gearbox.update();
 }
 
 void InputSystem::buttons_update() 
@@ -127,7 +132,8 @@ InputSystem::ConfigData InputSystem::parseConfig(std::istream& in) {
   return config;
 }
 
-void InputSystem::initButtonsFromConfig(const ConfigData& cfg) {
+void InputSystem::initButtonsFromConfig(const ConfigData& cfg) 
+{
   buttons.clear();
   auto add = [this](const ConfigEntry& e) {
     buttons.emplace_back(uint8_t(e.value), e.name);

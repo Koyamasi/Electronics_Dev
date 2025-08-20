@@ -1,5 +1,10 @@
 #include "Button.h"
 
+Button::Button()
+{
+    ;
+}
+
 Button::Button(uint8_t pin, std::string packet_content) 
 {
     this->button_pin = pin;

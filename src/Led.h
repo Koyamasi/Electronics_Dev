@@ -6,6 +6,7 @@
 
 class Led {
 public:
+    Led();
     // name is identifier for this LED
     Led(uint8_t pin, std::string name);
     void init();
@@ -19,6 +20,8 @@ public:
     void toggle_led();
 
     void send_packet();
+
+    std::string get_name();
 
 private:
     int state = LOW;
