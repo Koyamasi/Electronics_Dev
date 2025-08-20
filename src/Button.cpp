@@ -48,3 +48,8 @@ void Button::send_packet() {
     Serial.write(static_cast<uint8_t>(stateCh));
     Serial.write('\n'); // record terminator
 }
+
+std::string Button::get_name()
+{
+    return this->packet_content;
+}

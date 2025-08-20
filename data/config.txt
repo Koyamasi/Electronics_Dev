@@ -1,6 +1,6 @@
 Buttons
 ------
-"Start" - 41
+"Park" - 41
 "Select" - 42
 
 DpadButtons
@@ -11,4 +11,4 @@ Potensiometers
 
 led
 ------
-"test" - 7
+"Park" - 7

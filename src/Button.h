@@ -16,6 +16,7 @@ public:
     bool get_state();
 
     void send_packet();
+    std::string get_name();
 private:
     bool state = HIGH;
     uint8_t button_pin;

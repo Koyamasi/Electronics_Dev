@@ -56,6 +56,20 @@ void InputSystem::update_led()
 {
   for (auto& l : leds)
   {
+    for (auto& b : buttons)
+    {
+      if (b.get_name().compare("Park"))
+      {
+        if(b.get_state() == LOW)
+        {
+          l.set_state(HIGH);
+        }
+        else
+        {
+          l.set_state(LOW);
+        }
+      }
+    }
     l.update();
   }
 }

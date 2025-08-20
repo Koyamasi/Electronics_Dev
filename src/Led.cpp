@@ -14,7 +14,6 @@ bool Led::get_state()
 void Led::set_state(bool new_state)
 {
     this->state = new_state;
-    digitalWrite(this->led_pin, this->state);
 }
 
 uint8_t Led::get_led_pin()
@@ -33,10 +32,10 @@ void Led::update()
     digitalWrite(this->led_pin, this->state);
 }
 
-void Led::toggleLed()
+void Led::toggle_led()
 {
     this->set_state(!this->state);
-    this->send_packet();
+    //this->send_packet();
 }
 
 void Led::send_packet()

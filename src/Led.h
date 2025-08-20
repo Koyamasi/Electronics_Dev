@@ -16,12 +16,12 @@ public:
     void set_state(bool new_state);
     bool get_state();
 
-    void toggleLed();
+    void toggle_led();
 
     void send_packet();
 
 private:
-    bool state = LOW;
+    int state = LOW;
     uint8_t led_pin;
     std::string name;
 };
