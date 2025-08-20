@@ -34,19 +34,29 @@ bool InputSystem::begin() {
   std::istringstream iss(content);
   const auto cfg = parseConfig(iss);
   initButtonsFromConfig(cfg);
+  initLedsFromConfig(cfg);
   return true;
 }
 
-void InputSystem::update() 
+void InputSystem::update()
 {
   buttons_update();
+  update_led();
 }
 
 void InputSystem::buttons_update() 
 {
-  for (auto& b : buttons) 
+  for (auto& b : buttons)
   {
     b.update();
+  }
+}
+
+void InputSystem::update_led()
+{
+  for (auto& l : leds)
+  {
+    l.update();
   }
 }
 
@@ -111,4 +121,12 @@ void InputSystem::initButtonsFromConfig(const ConfigData& cfg) {
   };
   for (const auto& e : cfg.buttons)     add(e);
   for (const auto& e : cfg.dpadButtons) add(e);
+}
+
+void InputSystem::initLedsFromConfig(const ConfigData& cfg) {
+  leds.clear();
+  for (const auto& e : cfg.leds) {
+    leds.emplace_back(uint8_t(e.value), e.name);
+    leds.back().init();
+  }
 }
