@@ -1,66 +1,76 @@
 #include "Gearbox.h"
 
 Gearbox::Gearbox()
-{
-    this->park_button = new Button();
-    this->drive_button = new Button();
-    this->neutral_button = new Button();
-    this->rear_button = new Button();
-    this->manual_button = new Button();
+    : park_button(nullptr),
+      drive_button(nullptr),
+      neutral_button(nullptr),
+      rear_button(nullptr),
+      manual_button(nullptr),
+      park_led(nullptr),
+      drive_led(nullptr),
+      neutral_led(nullptr),
+      rear_led(nullptr),
+      manual_led(nullptr) {}
 
-    this->park_led = new Led();
-    this->drive_led = new Led();
-    this->neutral_led = new Led();
-    this->rear_led = new Led();
-    this->manual_led = new Led();
-}
-
-void Gearbox::init(std::vector<Button>& buttons, std::vector<Led>& leds) 
+void Gearbox::init(std::vector<Button>& buttons, std::vector<Led>& leds)
 {
-    for (auto& b : buttons)
-    {
-        if(b.get_name().compare("Park_button") == 0) 
-        {
+    for (auto& b : buttons) {
+        const std::string& name = b.get_name();
+        if (name == "Park_button") {
             park_button = &b;
-        }
-
-        else if(b.get_name().compare("Drive_button") == 0)
-        {
+        } else if (name == "Drive_button") {
             drive_button = &b;
+        } else if (name == "Neutral_button") {
+            neutral_button = &b;
+        } else if (name == "Rear_button") {
+            rear_button = &b;
+        } else if (name == "Manual_button") {
+            manual_button = &b;
         }
     }
-    
-    for (auto& l : leds)
-    {
-        if(l.get_name().compare("Park_led") == 0)
-        {
+
+    for (auto& l : leds) {
+        const std::string& name = l.get_name();
+        if (name == "Park_led") {
             park_led = &l;
+        } else if (name == "Drive_led") {
+            drive_led = &l;
+        } else if (name == "Neutral_led") {
+            neutral_led = &l;
+        } else if (name == "Rear_led") {
+            rear_led = &l;
+        } else if (name == "Manual_led") {
+            manual_led = &l;
         }
     }
 
     setGear('P'); // Default to 'P' on startup
 }
 
-void Gearbox::update() 
+void Gearbox::update()
 {
-    if (park_button->get_state() == HIGH)
-    {
-        park_button->send_packet();
-        park_led->set_state(HIGH);
+    // Refresh the hardware state of all buttons
+    if (park_button) park_button->update();
+    if (drive_button) drive_button->update();
+    if (neutral_button) neutral_button->update();
+    if (rear_button) rear_button->update();
+    if (manual_button) manual_button->update();
+
+    // Buttons use INPUT_PULLUP, so pressed == LOW
+    if (park_button && park_button->get_state() == LOW) {
+        setGear('P');
+    } else if (rear_button && rear_button->get_state() == LOW) {
+        setGear('R');
+    } else if (neutral_button && neutral_button->get_state() == LOW) {
+        setGear('N');
+    } else if (drive_button && drive_button->get_state() == LOW) {
+        setGear('D');
+    } else if (manual_button && manual_button->get_state() == LOW) {
+        setGear('M');
     }
-    else
-    {
-        park_button->send_packet();
-        delay(2000);
-        park_led->set_state(HIGH);
-    }
-    // else if (digitalRead(_rPin) == LOW) setGear('R');
-    // else if (digitalRead(_nPin) == LOW) setGear('N');
-    // else if (digitalRead(_dPin) == LOW) setGear('D');
-    // else if (digitalRead(_mPin) == LOW) setGear('M');
 }
 
-void Gearbox::setGear(char gear) 
+void Gearbox::setGear(char gear)
 {
     if (gear != lastGear) {
         delay(500); // Debounce
@@ -70,17 +80,33 @@ void Gearbox::setGear(char gear)
     }
 }
 
-void Gearbox::setLeds(char gear) 
+void Gearbox::setLeds(char gear)
 {
-    // digitalWrite(_pled, gear == 'P' ? HIGH : LOW);
-    // digitalWrite(_rled, gear == 'R' ? HIGH : LOW);
-    // digitalWrite(_nled, gear == 'N' ? HIGH : LOW);
-    // digitalWrite(_dled, gear == 'D' ? HIGH : LOW);
-    // digitalWrite(_mled, gear == 'M' ? HIGH : LOW);
+    if (park_led) {
+        park_led->set_state(gear == 'P' ? HIGH : LOW);
+        park_led->update();
+    }
+    if (rear_led) {
+        rear_led->set_state(gear == 'R' ? HIGH : LOW);
+        rear_led->update();
+    }
+    if (neutral_led) {
+        neutral_led->set_state(gear == 'N' ? HIGH : LOW);
+        neutral_led->update();
+    }
+    if (drive_led) {
+        drive_led->set_state(gear == 'D' ? HIGH : LOW);
+        drive_led->update();
+    }
+    if (manual_led) {
+        manual_led->set_state(gear == 'M' ? HIGH : LOW);
+        manual_led->update();
+    }
 }
 
-void Gearbox::sendPacket(char gear) 
+void Gearbox::sendPacket(char gear)
 {
     byte packet[2] = { (byte)gear, '\n' };
     Serial.write(packet, 2);
-} 
+}
+

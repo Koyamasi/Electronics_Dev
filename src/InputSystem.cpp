@@ -37,8 +37,7 @@ bool InputSystem::begin() {
   const auto cfg = parseConfig(iss);
   initButtonsFromConfig(cfg);
   initLedsFromConfig(cfg);
-  gearbox=Gearbox();
-  gearbox.init(buttons,leds);
+  gearbox.init(buttons, leds);
   return true;
 }
 
@@ -63,9 +62,9 @@ void InputSystem::update_led()
   {
     for (auto& b : buttons)
     {
-      if (b.get_name().compare("Park"))
+      if (b.get_name() == "Park_button")
       {
-        if(b.get_state() == LOW)
+        if (b.get_state() == LOW)
         {
           l.set_state(HIGH);
         }
