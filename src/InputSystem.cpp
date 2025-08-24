@@ -43,8 +43,9 @@ bool InputSystem::begin() {
 
 void InputSystem::update()
 {
-  //buttons_update();
-  //update_led();
+  // Poll buttons and update any LEDs each cycle
+  buttons_update();
+  update_led();
   gearbox.update();
 }
 
