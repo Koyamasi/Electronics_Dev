@@ -1,5 +1,9 @@
 #include "Gearbox.h"
 
+// ---------------------------------------------------------------------------
+//  Construction and initialisation
+// ---------------------------------------------------------------------------
+
 Gearbox::Gearbox()
     : park_button(nullptr),
       drive_button(nullptr),
@@ -14,6 +18,7 @@ Gearbox::Gearbox()
 
 void Gearbox::init(std::vector<Button>& buttons, std::vector<Led>& leds)
 {
+    // Identify relevant buttons by name
     for (auto& b : buttons) {
         const std::string& name = b.get_name();
         if (name == "Park_button") {
@@ -29,6 +34,7 @@ void Gearbox::init(std::vector<Button>& buttons, std::vector<Led>& leds)
         }
     }
 
+    // Identify LEDs by name
     for (auto& l : leds) {
         const std::string& name = l.get_name();
         if (name == "Park_led") {
@@ -46,6 +52,10 @@ void Gearbox::init(std::vector<Button>& buttons, std::vector<Led>& leds)
 
     setGear('P'); // Default to 'P' on startup
 }
+
+// ---------------------------------------------------------------------------
+//  Main update loop
+// ---------------------------------------------------------------------------
 
 void Gearbox::update()
 {
@@ -70,10 +80,14 @@ void Gearbox::update()
     }
 }
 
+// ---------------------------------------------------------------------------
+//  Helpers
+// ---------------------------------------------------------------------------
+
 void Gearbox::setGear(char gear)
 {
     if (gear != lastGear) {
-        delay(500); // Debounce
+        delay(500); // Debounce mechanical shift levers
         setLeds(gear);
         sendPacket(gear);
         lastGear = gear;
@@ -109,4 +123,5 @@ void Gearbox::sendPacket(char gear)
     byte packet[2] = { (byte)gear, '\n' };
     Serial.write(packet, 2);
 }
+
 

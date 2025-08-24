@@ -8,6 +8,12 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Implements a simple automatic gearbox state machine.
+ *
+ * Gearbox observes dedicated buttons for each gear position and updates
+ * indicator LEDs and serial output whenever the selected gear changes.
+ */
 class Gearbox {
 public:
     Gearbox();
@@ -26,16 +32,22 @@ public:
     Led* rear_led;
     Led* manual_led;
 
+    /**
+     * @brief Locate the relevant buttons/LEDs from the provided lists.
+     */
     void init(std::vector<Button>& buttons, std::vector<Led>& leds);
+
+    /// Poll inputs and update LEDs and serial output.
     void update();
 
 private:
-    void setGear(char gear);
-    void setLeds(char gear);
-    void sendPacket(char gear);
+    void setGear(char gear);      ///< Handle gear change
+    void setLeds(char gear);      ///< Update indicator LEDs
+    void sendPacket(char gear);   ///< Send selected gear over Serial
 
-    char lastGear = '\0';
+    char lastGear = '\0';        ///< Previously selected gear
 };
 
-#endif
+#endif // GEARBOX_H
+
 

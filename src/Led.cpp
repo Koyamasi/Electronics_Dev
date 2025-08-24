@@ -1,15 +1,17 @@
 #include "Led.h"
 
-Led::Led()
-{
-    ;
-}
+// ---------------------------------------------------------------------------
+//  Construction and configuration
+// ---------------------------------------------------------------------------
+
+Led::Led() {}
 
 Led::Led(uint8_t led_pin, std::string name)
-{
-    this->led_pin = led_pin;
-    this->name = name;
-}
+    : led_pin(led_pin), name(std::move(name)) {}
+
+// ---------------------------------------------------------------------------
+//  Accessors
+// ---------------------------------------------------------------------------
 
 bool Led::get_state()
 {
@@ -31,6 +33,10 @@ std::string Led::get_name()
     return this->name;
 }
 
+// ---------------------------------------------------------------------------
+//  Behaviour
+// ---------------------------------------------------------------------------
+
 void Led::init()
 {
     pinMode(this->led_pin, OUTPUT);
@@ -45,7 +51,7 @@ void Led::update()
 void Led::toggle_led()
 {
     this->set_state(!this->state);
-    //this->send_packet();
+    // this->send_packet(); // Optionally report state change
 }
 
 void Led::send_packet()

@@ -4,25 +4,30 @@
 #include <sstream>
 #include <iostream>     // only used if you call printConfig on desktop
 
+// Helper: remove leading/trailing whitespace from a string
 static inline void trim(std::string& s) {
   auto ns = [](unsigned char c){ return !std::isspace(c); };
   s.erase(s.begin(), std::find_if(s.begin(), s.end(), ns));
   s.erase(std::find_if(s.rbegin(), s.rend(), ns).base(), s.end());
 }
 
+// ---------------------------------------------------------------------------
+//  Construction
+// ---------------------------------------------------------------------------
+
 InputSystem::ConfigEntry::ConfigEntry(const std::string& n, int v) : name(n), value(v) {}
 InputSystem::InputSystem() : fsPath("/config.txt") {}
 
 bool InputSystem::begin() {
   // Mount FS (format_if_mount_failed = true)
-  if (!LittleFS.begin(true)) 
+  if (!LittleFS.begin(true))
   {
     Serial.println("LittleFS mount FAILED");
     return false;
   }
 
   File f = LittleFS.open(fsPath, "r");
-  if (!f) 
+  if (!f)
   {
     Serial.println("Failed to open /config.txt");
     return false;
@@ -43,12 +48,14 @@ bool InputSystem::begin() {
 
 void InputSystem::update()
 {
+  // In a full application we might also update buttons and LEDs directly.
+  // The gearbox currently encapsulates all required behaviour.
   //buttons_update();
   //update_led();
   gearbox.update();
 }
 
-void InputSystem::buttons_update() 
+void InputSystem::buttons_update()
 {
   for (auto& b : buttons)
   {
@@ -58,6 +65,7 @@ void InputSystem::buttons_update()
 
 void InputSystem::update_led()
 {
+  // Example LED logic: mirror the Park button state to all LEDs
   for (auto& l : leds)
   {
     for (auto& b : buttons)
@@ -78,7 +86,7 @@ void InputSystem::update_led()
   }
 }
 
-void InputSystem::printConfig(const ConfigData& cfg) 
+void InputSystem::printConfig(const ConfigData& cfg)
 {
   Serial.printf("Buttons (%u):\n", (unsigned)cfg.buttons.size());
   for (const auto& e : cfg.buttons) Serial.printf("  %s - %d\n", e.name.c_str(), e.value);
@@ -131,7 +139,7 @@ InputSystem::ConfigData InputSystem::parseConfig(std::istream& in) {
   return config;
 }
 
-void InputSystem::initButtonsFromConfig(const ConfigData& cfg) 
+void InputSystem::initButtonsFromConfig(const ConfigData& cfg)
 {
   buttons.clear();
   auto add = [this](const ConfigEntry& e) {
