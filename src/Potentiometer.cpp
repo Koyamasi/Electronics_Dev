@@ -45,6 +45,7 @@ void Potentiometer::update()
 {
     int raw = analogRead(this->pot_pin);
     uint8_t new_state = (raw * NUM_STATES) / (ADC_MAX + 1);
+
     if (new_state >= NUM_STATES) new_state = NUM_STATES - 1;
     if (new_state != this->state)
     {
