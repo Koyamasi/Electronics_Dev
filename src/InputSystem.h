@@ -9,6 +9,7 @@
 #include <istream>
 #include "Button.h"
 #include "Led.h"
+#include "Potentiometer.h"
 #include "Gearbox.h"
 
 class InputSystem {
@@ -30,19 +31,23 @@ public:
     bool begin();                   // mounts LittleFS, loads & parses file
     void update();                  // high-level update
     void buttons_update();          // updates all buttons
+    void potentiometers_update();   // updates all potentiometers
     void update_led();              // updates all leds
     static void printConfig(const ConfigData& cfg);
 
     const std::vector<Button>& getButtons() const { return buttons; }
+    const std::vector<Potentiometer>& getPotentiometers() const { return potentiometers; }
 
 private:
     ConfigData parseConfig(std::istream& in);
     void initButtonsFromConfig(const ConfigData& cfg);
+    void initPotentiometersFromConfig(const ConfigData& cfg);
     void initLedsFromConfig(const ConfigData& cfg);
 
     String fsPath;                  // "/config.txt"
     std::vector<Button> buttons;    // Buttons + DpadButtons
     std::vector<Led> leds;          // LED outputs
+    std::vector<Potentiometer> potentiometers;
     Gearbox gearbox;                //gearbox
 };
 
