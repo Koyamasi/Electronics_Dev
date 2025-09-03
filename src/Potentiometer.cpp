@@ -71,7 +71,6 @@ std::string Potentiometer::get_name()
 {
     return this->packet_content;
 }
-
 void Potentiometer::log_raw(int raw)
 {
     Serial.print(packet_content.c_str());
