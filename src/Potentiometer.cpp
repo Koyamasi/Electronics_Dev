@@ -36,6 +36,7 @@ void Potentiometer::init()
 #endif
     pinMode(this->pot_pin, INPUT);
     int raw = analogRead(this->pot_pin);
+    log_raw(raw);
     uint8_t new_state = (raw * NUM_STATES) / (ADC_MAX + 1);
     if (new_state >= NUM_STATES) new_state = NUM_STATES - 1;
     this->set_state(new_state);
@@ -45,10 +46,10 @@ void Potentiometer::update()
 {
     int raw = analogRead(this->pot_pin);
     uint8_t new_state = (raw * NUM_STATES) / (ADC_MAX + 1);
-
     if (new_state >= NUM_STATES) new_state = NUM_STATES - 1;
     if (new_state != this->state)
     {
+        log_raw(raw);
         this->set_state(new_state);
         this->send_packet();
     }
@@ -69,5 +70,11 @@ void Potentiometer::send_packet()
 std::string Potentiometer::get_name()
 {
     return this->packet_content;
+}
+void Potentiometer::log_raw(int raw)
+{
+    Serial.print(packet_content.c_str());
+    Serial.print(" raw=");
+    Serial.println(raw);
 }
 

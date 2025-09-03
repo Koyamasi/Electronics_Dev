@@ -20,6 +20,7 @@ public:
     std::string get_name();
 
 private:
+    void log_raw(int raw);
     uint8_t state = 0;
     uint8_t pot_pin;
     std::string packet_content;
