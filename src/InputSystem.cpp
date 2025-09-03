@@ -36,6 +36,7 @@ bool InputSystem::begin() {
   std::istringstream iss(content);
   const auto cfg = parseConfig(iss);
   initButtonsFromConfig(cfg);
+  initPotentiometersFromConfig(cfg);
   initLedsFromConfig(cfg);
   gearbox.init(buttons, leds);
   return true;
@@ -45,6 +46,7 @@ void InputSystem::update()
 {
   // Poll buttons and update any LEDs each cycle
   buttons_update();
+  potentiometers_update();
   update_led();
   gearbox.update();
 }
@@ -54,6 +56,14 @@ void InputSystem::buttons_update()
   for (auto& b : buttons)
   {
     b.update();
+  }
+}
+
+void InputSystem::potentiometers_update()
+{
+  for (auto& p : potentiometers)
+  {
+    p.update();
   }
 }
 
@@ -148,5 +158,13 @@ void InputSystem::initLedsFromConfig(const ConfigData& cfg) {
   for (const auto& e : cfg.leds) {
     leds.emplace_back(uint8_t(e.value), e.name);
     leds.back().init();
+  }
+}
+
+void InputSystem::initPotentiometersFromConfig(const ConfigData& cfg) {
+  potentiometers.clear();
+  for (const auto& e : cfg.potentiometers) {
+    potentiometers.emplace_back(uint8_t(e.value), e.name);
+    potentiometers.back().init();
   }
 }
