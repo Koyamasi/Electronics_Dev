@@ -1,0 +1,21 @@
+﻿Buttons
+"Handbrake" - 41
+"Start" - 42
+---
+Potensiometers
+---
+led
+Park - 2
+Reverse - 4
+Neutral - 5
+Drive - 7
+Manual - 19
+---
+Geabox_analog
+pin - 9
+range - 150
+Park - 3946
+Reverse - 3375
+Neutral - 2650
+Drive - 1850
+Manual - 1000

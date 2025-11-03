@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cctype>
 #include <sstream>
-#include <iostream>     // only used if you call printConfig on desktop
+#include <iostream> // only used if you call printConfig on desktop
 
 static inline void trim(std::string& s) {
   auto ns = [](unsigned char c){ return !std::isspace(c); };
@@ -14,33 +14,39 @@ InputSystem::ConfigEntry::ConfigEntry(const std::string& n, int v) : name(n), va
 InputSystem::InputSystem() : fsPath("/config.txt") {}
 
 bool InputSystem::begin() {
-  // Mount FS (format_if_mount_failed = true)
-  if (!LittleFS.begin(true)) 
-  {
+  if (!LittleFS.begin(true)) {
     Serial.println("LittleFS mount FAILED");
-    return false;
+    // don’t return yet — system can still run without FS-backed config if you want
+    return false; // keep existing behavior if you prefer
   }
 
-  File f = LittleFS.open(fsPath, "r");
-  if (!f) 
-  {
-    Serial.println("Failed to open /config.txt");
-    return false;
+  File f = LittleFS.open(fsPath.c_str(), "r");
+  if (!f) {
+    Serial.printf("Failed to open %s\n", fsPath.c_str());
+    return false; // keep as-is; or continue with defaults if you prefer
   }
 
-  // Read entire file and parse via std::istringstream
   std::string content; content.reserve(f.size());
   while (f.available()) content.push_back(char(f.read()));
   f.close();
 
   std::istringstream iss(content);
   const auto cfg = parseConfig(iss);
+
+  Serial.printf("[InputSystem] Loaded: %u buttons, %u dpad, %u pots, %u leds, %u gearbox lines\n",
+    (unsigned)cfg.buttons.size(), (unsigned)cfg.dpadButtons.size(),
+    (unsigned)cfg.potentiometers.size(), (unsigned)cfg.leds.size(),
+    0u);
+
   initButtonsFromConfig(cfg);
   initPotentiometersFromConfig(cfg);
   initLedsFromConfig(cfg);
-  gearbox.init(buttons, leds);
+
+  gearbox_analog.init_midpoints_and_ranges_from_file("/config_analog_gear.txt");
+  gearbox_analog.init(leds);
   return true;
 }
+
 
 void InputSystem::update()
 {
@@ -48,7 +54,7 @@ void InputSystem::update()
   buttons_update();
   potentiometers_update();
   update_led();
-  gearbox.update();
+  gearbox_analog.update();
 }
 
 void InputSystem::buttons_update() 
@@ -71,20 +77,6 @@ void InputSystem::update_led()
 {
   for (auto& l : leds)
   {
-    for (auto& b : buttons)
-    {
-      if (b.get_name() == "Park_button")
-      {
-        if (b.get_state() == LOW)
-        {
-          l.set_state(HIGH);
-        }
-        else
-        {
-          l.set_state(LOW);
-        }
-      }
-    }
     l.update();
   }
 }
@@ -112,10 +104,12 @@ InputSystem::ConfigData InputSystem::parseConfig(std::istream& in) {
     trim(line);
     if (line.empty()) continue;
 
-    if      (line == "Buttons")        currentSection = "buttons";
-    else if (line == "Potensiometers") currentSection = "potentiometers"; // keep original spelling
-    else if (line == "DpadButtons")    currentSection = "dpadButtons";
-    else if (line == "led")            currentSection = "led";             // keep original case
+    if      (line == "Buttons")          currentSection = "buttons";
+    else if (line == "Potensiometers")   currentSection = "potentiometers"; // keep original spelling
+    else if (line == "DpadButtons")      currentSection = "dpadButtons";
+    else if (line == "led")              currentSection = "led";             // keep original case
+    else if (line == "Geabox_analog" || 
+             line == "Gearbox_analog")   { currentSection.clear(); continue; }
     else if (line.find("---") != std::string::npos) continue;
     else {
       const std::string sep = " - ";
@@ -130,10 +124,11 @@ InputSystem::ConfigData InputSystem::parseConfig(std::istream& in) {
 
       try {
         int value = std::stoi(valueStr);
-        if      (currentSection == "buttons")       config.buttons.emplace_back(name, value);
-        else if (currentSection == "potentiometers")config.potentiometers.emplace_back(name, value);
-        else if (currentSection == "dpadButtons")   config.dpadButtons.emplace_back(name, value);
-        else if (currentSection == "led")           config.leds.emplace_back(name, value);
+        if      (currentSection == "buttons")         config.buttons.emplace_back(name, value);
+        else if (currentSection == "potentiometers")  config.potentiometers.emplace_back(name, value);
+        else if (currentSection == "dpadButtons")     config.dpadButtons.emplace_back(name, value);
+        else if (currentSection == "led")             config.leds.emplace_back(name, value);
+        // analog gearbox overrides from config.txt are intentionally ignored
       } catch (...) {
         Serial.printf("Bad value: %s in line: %s\n", valueStr.c_str(), line.c_str());
       }
@@ -168,3 +163,5 @@ void InputSystem::initPotentiometersFromConfig(const ConfigData& cfg) {
     potentiometers.back().init();
   }
 }
+
+// initGearBoxAnalog removed: analog gearbox is now configured only via /config_analog_gear.txt

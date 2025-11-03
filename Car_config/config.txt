@@ -1,0 +1,27 @@
+Buttons
+------
+"Park_button" - 34
+"Drive_button" - 14
+"Neutral_button" - 16
+"Rear_button" - 18
+"Manual_button" - 12
+"Alarm" - 5
+"Handbreak" - 8
+"Red" - 37
+"Green" - 38
+"Blue" - 39
+"White" - 40
+
+DpadButtons
+------
+
+Potensiometers
+------
+led
+------
+"Park_led" - 35
+"Drive_led" - 15
+"Neutral_led" - 17
+"Rear_led" - 33
+"Manual_led" - 13
+

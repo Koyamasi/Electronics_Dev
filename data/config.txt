@@ -1,15 +1,12 @@
 Buttons
-------
-"Park_button" - 41
-"Drive_button" - 42
-
-DpadButtons
-------
-
+"Handbrake" - 41
+"Start" - 42
+---
 Potensiometers
-------
-
+---
 led
-------
-"Park_led" - 7
-
+"Park_led" - 2
+"Reverse_led" - 4
+"Neutral_led" - 5
+"Drive" - 7
+"Manual_led" - 19

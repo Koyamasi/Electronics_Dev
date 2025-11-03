@@ -2,53 +2,61 @@
 #define INPUTSYSTEM_H
 
 #include <Arduino.h>
-#include <FS.h>
-#include <LittleFS.h>   // change to <SPIFFS.h> if you prefer SPIFFS
 #include <vector>
 #include <string>
 #include <istream>
+
+#include <FS.h>
+#include <LittleFS.h>
+
 #include "Button.h"
-#include "Led.h"
 #include "Potentiometer.h"
-#include "Gearbox.h"
+#include "Led.h"
+#include "Gearbox_analog.h"
 
 class InputSystem {
 public:
-    struct ConfigEntry {
-        std::string name;
-        int value;
-        ConfigEntry(const std::string& n, int v);
-    };
+  struct ConfigEntry {
+    std::string name;
+    int value;
+    ConfigEntry(const std::string& n, int v);
+  };
 
-    struct ConfigData {
-        std::vector<ConfigEntry> buttons;
-        std::vector<ConfigEntry> potentiometers;
-        std::vector<ConfigEntry> dpadButtons;
-        std::vector<ConfigEntry> leds;
-    };
+  struct ConfigData {
+    std::vector<ConfigEntry> buttons;
+    std::vector<ConfigEntry> potentiometers;
+    std::vector<ConfigEntry> dpadButtons;
+    std::vector<ConfigEntry> leds;
+  };
 
-    InputSystem();                  // defaults to "/config.txt"
-    bool begin();                   // mounts LittleFS, loads & parses file
-    void update();                  // high-level update
-    void buttons_update();          // updates all buttons
-    void potentiometers_update();   // updates all potentiometers
-    void update_led();              // updates all leds
-    static void printConfig(const ConfigData& cfg);
+  InputSystem();
 
-    const std::vector<Button>& getButtons() const { return buttons; }
-    const std::vector<Potentiometer>& getPotentiometers() const { return potentiometers; }
+  bool begin();
+  void update();
+
+  // optional for debugging
+  static void printConfig(const ConfigData& cfg);
+  static ConfigData parseConfig(std::istream& in);
 
 private:
-    ConfigData parseConfig(std::istream& in);
-    void initButtonsFromConfig(const ConfigData& cfg);
-    void initPotentiometersFromConfig(const ConfigData& cfg);
-    void initLedsFromConfig(const ConfigData& cfg);
+  void buttons_update();
+  void potentiometers_update();
+  void update_led();
 
-    String fsPath;                  // "/config.txt"
-    std::vector<Button> buttons;    // Buttons + DpadButtons
-    std::vector<Led> leds;          // LED outputs
-    std::vector<Potentiometer> potentiometers;
-    Gearbox gearbox;                //gearbox
+  void initButtonsFromConfig(const ConfigData& cfg);
+  void initLedsFromConfig(const ConfigData& cfg);
+  void initPotentiometersFromConfig(const ConfigData& cfg);
+
+private:
+  std::string fsPath;
+
+  std::vector<Button> buttons;
+  std::vector<Potentiometer> potentiometers;
+  std::vector<Led> leds;
+
+public:
+  // expose if other subsystems need it
+  Gearbox_analog gearbox_analog;
 };
 
-#endif // INPUTSYSTEM_H
+#endif

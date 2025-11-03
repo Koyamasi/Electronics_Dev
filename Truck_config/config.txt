@@ -1,0 +1,19 @@
+Buttons
+------
+"Siren" - 6
+"Catalyst_on" - 8
+"Catalyst_of" - 9
+"ABS" - 14
+"Hill_assist" - 16
+"Pump" - 17
+"Auto_clapet" - 33
+"Baroulk" - 35
+
+DpadButtons
+------
+
+Potensiometers
+------
+led
+------
+

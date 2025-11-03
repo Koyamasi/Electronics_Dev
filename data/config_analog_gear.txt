@@ -1,0 +1,7 @@
+9
+150
+Park, 4000
+Reverse, 1670
+Neutral, 1100
+Drive, 740
+Manual, 490
